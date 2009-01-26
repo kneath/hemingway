@@ -1,4 +1,15 @@
 <?php
+
+$themecolors = array(
+	'bg' => '000000',
+	'text' => 'bfbfbf',
+	'link' => 'ffffff',
+	'border' => '000000'
+	);
+
+// this varies but the single page content width seems to be 607px max
+$content_width = 600;
+
 class Hemingway
 	{
 		
@@ -67,7 +78,6 @@ class Hemingway
 			
 			function get_block_output($block_place)
 				{
-					global $hemingway;
 					$blocks = $this->get_block_contents($block_place);
 					foreach($blocks as $key => $block ){
 						include (TEMPLATEPATH . '/blocks/' . $block . '.php');
@@ -77,60 +87,13 @@ class Hemingway
 			function get_style(){
 				$this->style = get_option('hem_style');
 			}
-			
-			function date_format($slashes = false){
-				global $hemingway_options;
-				if ($slashes)
-					return $hemingway_options['international_dates'] == 1 ? 'd/m' : 'm/d'; 
-				else
-					return $hemingway_options['international_dates'] == 1 ? 'd.m' : 'm.d'; 
-			}
-			
-			// Excerpt cutting. I'd love to use the_excerpt_reloaded, but needless licensing prohibits me from doing so
-			function excerpt(){
-				echo $this->get_excerpt();
-			}
-			
-			function get_excerpt(){
-				global $post;
-				
-				$max_length = 75; // Maximum words.
-				
-				// If they've manually put in an excerpt, let it go!
-				if ($post->post_excerpt) return $post->post_excerpt;
-				
-				// Check to see if it's a password protected post
-				if ($post->post_password) {
-						if ($_COOKIE['wp-postpass_'.COOKIEHASH] != $post->post_password) {
-								if(is_feed()) {
-										return __('This is a protected post');
-								} else {
-										return  get_the_password_form();
-								}
-						}
-				}
-				
-				if( strpos($post->post_content, '<!--more-->') ) { // There's a more link
-            $temp_ex = explode('<!--more-->', $post->post_content, 2);
-            $excerpt =  $temp_ex[0];
-        } else {
-            $temp_ex = explode(' ', $post->post_content);  // Split up the spaces
-						$length = count($temp_ex) < $max_length ? count($temp_ex) : $max_length;
-						for ($i=0; $i<$length; $i++) $excerpt .= $temp_ex[$i] . ' ';
-        }
-        
-				
-				$excerpt = balanceTags($excerpt);
-				$excerpt = apply_filters('the_excerpt', $excerpt);
-				
-				return $excerpt;
-				
-			}
 	}
 	
 $hemingway = new Hemingway();
+$hemingway->get_available_blocks();
+$hemingway->get_style();
 
-$hemingway->version = "0.17";
+$hemingway->version = "0.13";
 // Options
 
 $default_blocks = Array(
@@ -139,9 +102,7 @@ $default_blocks = Array(
 	'category_listing' => 'Category Listing',
 	'blogroll' => 'Blogroll',
 	'pages' => 'Pages',
-	'monthly_archives' => 'Monthly Archives',
-	'related_posts' => 'Recent Entries',
-	'flickr_rss' => 'Flickr RSS'
+	'monthly_archives' => 'Monthly Archives'
 );
 
 $default_block_locations = Array(
@@ -151,10 +112,6 @@ $default_block_locations = Array(
 	'block_4' => Array(),
 	'block_5' => Array(),
 	'block_6' => Array()
-);
-
-$default_options = Array(
-	'international_dates' => 0
 );
 
 if (!get_option('hem_version') || get_option('hem_version') < $hemingway->version){
@@ -172,27 +129,11 @@ if (!get_option('hem_version') || get_option('hem_version') < $hemingway->versio
 	
 	if (!get_option('hem_style') )
 		add_option('hem_style', '', 'Location of custom style sheet');
-		
-	if (!get_option('hem_options') )
-		add_option('hem_options', $default_options, 'Location of custom style sheet');
-		
-	wp_cache_flush(); // I was having caching issues
 }
-
-// Stuff
-
-add_action ('admin_menu', 'hemingway_menu');
-
-$hem_loc = '../themes/' . basename(dirname($file)); 
-
-$hemingway->get_available_blocks();
-$hemingway->get_style();
-$hemingway_options = get_option('hem_options');
-
 // Ajax Stuff
 
 if ($_GET['hem_action'] == 'add_block'){
-	auth_redirect(); // Make sure they're logged in
+	
 	$block_ref = $_GET['block_ref'];
 	$block_place = $_GET['block_place'];
 	
@@ -204,7 +145,7 @@ if ($_GET['hem_action'] == 'add_block'){
 	$output = '<ul>';
 	foreach($hemingway->get_block_contents($block_place) as $key => $block_ref){
 			$block_name = $hemingway->available_blocks[$block_ref];
-			$output .= '<li>' . $block_name . ' <a href="#" class="remove" onclick="remove_block(\'' . $block_place . '\', \'' . $block_ref . '\'); return false">remove</a></li>';
+			$output .= '<li>' . $block_name . ' (<a href="#" onclick="remove_block(\'' . $block_place . '\', \'' . $block_ref . '\');">remove</a>)</li>';
 	}
 	$output .= '</ul>';
 	echo $output;
@@ -212,7 +153,7 @@ if ($_GET['hem_action'] == 'add_block'){
 }
 
 if ($_GET['hem_action'] == 'remove_block'){
-	auth_redirect(); // Make sure they're logged in
+	
 	$block_ref = $_GET['block_ref'];
 	$block_place = $_GET['block_place'];
 	
@@ -222,51 +163,45 @@ if ($_GET['hem_action'] == 'remove_block'){
 	$output = '<ul>';
 	foreach($hemingway->get_block_contents($block_place) as $key => $block_ref){
 			$block_name = $hemingway->available_blocks[$block_ref];
-			$output .= '<li>' . $block_name . ' <a href="#" class="remove" onclick="remove_block(\'' . $block_place . '\', \'' . $block_ref . '\'); return false">remove</a></li>';
+			$output .= '<li>' . $block_name . ' (<a href="#" onclick="remove_block(\'' . $block_place . '\', \'' . $block_ref . '\');">remove</a>)</li>';
 	}
 	$output .= '</ul>';
 	echo $output;
 	exit(); // Kill any more output
 }
 
+if ($_POST['custom_styles']){
+	update_option('hem_style', $_POST['custom_styles']);
+	wp_cache_flush();
+	$message  = 'Styles updated!';
+}
+
+if ($_POST['block_ref']){
+	$hemingway->add_available_block($_POST['display_name'], $_POST['block_ref']);
+	$hemingway->get_available_blocks();
+	$message = 'Block added!';
+}
+
+// Stuff
+
+add_action ('admin_menu', 'hemingway_menu');
+
+$hem_loc = '../themes/' . basename(dirname($file)); 
+
+function hemingway_scripts() {
+	$dir = get_bloginfo('template_directory');
+	wp_enqueue_script('prototype');
+	wp_enqueue_script('dragdrop', $dir . '/admin/js/dragdrop.js', false, 1);
+	wp_enqueue_script('effects', $dir . '/admin/js/effects.js', false, 1);
+}
 
 function hemingway_menu() {
-	add_submenu_page('themes.php', 'Hemingway Options', 'Hemingway Options', 5, $hem_loc . 'functions.php', 'menu');
+	$page = add_submenu_page('themes.php', 'Hemingway Options', 'Hemingway Options', 5, $hem_loc . 'functions.php', 'menu');
+	add_action('load-' . $page, 'hemingway_scripts');
 }
 
 function menu() {
-
-	global $hem_loc, $hemingway, $message;
-	
-	if ($_POST['custom_styles']){
-		update_option('hem_style', $_POST['custom_styles']);
-		wp_cache_flush();
-		$hemingway->get_style();
-		$message  = 'Styles updated!';
-	}
-	
-	if ($_POST['block_ref']){
-		$hemingway->add_available_block($_POST['display_name'], $_POST['block_ref']);
-		$hemingway->get_available_blocks();
-		$message = 'Block added!';
-	}
-	
-	if ($_POST['reset'] == 1){
-		delete_option('hem_style');
-		delete_option('hem_blocks');
-		delete_option('hem_available_blocks');
-		delete_option('hem_version');
-		$message = 'Settings removed.';
-	}
-	
-	if ($_POST['misc_options']){
-		$hemingway_options['international_dates'] = $_POST['international_dates'];
-		update_option('hem_options', $hemingway_options);
-		wp_cache_flush();
-		$message  = 'Options updated!';
-	}
-
-
+global $hem_loc, $hemingway, $message;
 ?>
 <!--
 Okay, so I don't honestly know how legit this is, but I want a more intuitive interface
@@ -274,21 +209,11 @@ so I'm going to import scriptaculous. There's a good chance this is going to mes
 for some people :)
 -->
 <script type="text/javascript">
-<?php include (TEMPLATEPATH . '/admin/js/prototype.js'); ?>
-<?php include (TEMPLATEPATH . '/admin/js/dragdrop.js'); ?>
-<?php include (TEMPLATEPATH . '/admin/js/effects.js'); ?>
-</script>
-<script type="text/javascript">
 	function remove_block(block_place, block_ref){
 		url = 'themes.php?page=functions.php&hem_action=remove_block&block_place=' + block_place + '&block_ref=' + block_ref;
 		new Ajax.Updater(block_place, url, 
 				{
-					evalScripts:true, asynchronous:true,
-					onComplete : function(request){
-						$('dropmessage').innerHTML = "<p>Block removed!</p>";
-						Effect.Appear('dropmessage', { queue: 'front' });
-						Effect.Fade('dropmessage', { queue: 'end' });
-					}
+					evalScripts:true, asynchronous:true
 				}
 		)
 	}
@@ -297,8 +222,7 @@ for some people :)
 	.block{
 		width:200px;
 		height:200px;
-		border: 1px solid #bbb;
-		background-color: #f0f8ff;
+		border:1px solid #CCC;
 		float:left;
 		margin:20px 1em 20px 0;
 		padding:10px;
@@ -311,25 +235,7 @@ for some people :)
 	.block ul li{
 		margin:0 0 5px 0;
 		list-style-type:none;
-		border:1px solid #DDD;
-		background:#FbFbFb;
-		padding:4px 10px;
-		position:relative;
 	}
-	.block ul li a.remove{
-		position:absolute;
-		right:10px;
-		top:6px;
-		display:block;
-		text-decoration:none;
-		font-size:1px;
-		width:14px;
-		height:14px;
-		text-indent:-9999px;
-		background:url(<?php bloginfo('stylesheet_directory'); ?>/admin/images/icon_delete.gif) 0 0 no-repeat #FFF;
-		border:none;
-	}
-	* html .block ul li a.remove{ right:15px; }
 	.block-active{
 		border:1px solid #333;
 		background:#F2F8FF;
@@ -338,8 +244,8 @@ for some people :)
 	#addables li{
 		list-style-type:none;
 		margin:1em 1em 1em 0;
-		background:#F5F5F5;
-		border:1px solid #CCC;
+		background:#EAEAEA;
+		border:1px solid #DDD;
 		padding:3px;
 		width:215px;
 		float:left;
@@ -359,47 +265,25 @@ for some people :)
 <? if($message) : ?>
 <div id="message" class="updated fade"><p><?=$message?></p></div>
 <? endif; ?>
-<div id="dropmessage" class="updated" style="display:none;"></div>
+
 <div class="wrap" style="position:relative;">
-
-<? if (get_option('hem_version')) : ?>
-
-
 <h2><?php _e('Hemingway Options'); ?></h2>
 
-<h3>Custom Styles</h3>
-<p>Select a style from the dropdown below to customize hemingway with a special style.</p>
+<h3>Color Options</h3>
+<p>Choose a primary color for your site:</p>
 <form name="dofollow" action="" method="post">
   <input type="hidden" name="page_options" value="'dofollow_timeout'" />
-	<select name="custom_styles">
-	<option value="none"<?php if ($hemingway->style == 'none') echo 'selected="selected"'; ?>>No Custom Style</option>
-	<?php
-		$scheme_dir = @ dir(ABSPATH . '/wp-content/themes/' . get_template() . '/styles');
-	
-		if ($scheme_dir) {
-			while(($file = $scheme_dir->read()) !== false) {
-					if (!preg_match('|^\.+$|', $file) && preg_match('|\.css$|', $file)) 
-					$scheme_files[] = $file;
-				}
-			}
-			if ($scheme_dir || $scheme_files) {
-				foreach($scheme_files as $scheme_file) {
-				if ($scheme_file == $hemingway->style){
-					$selected = ' selected="selected"';
-				}else{
-					$selected = "";
-				}
-				echo '<option value="' . $scheme_file . '"' . $selected . '>' . $scheme_file . '</option>';
-			}
-		} 
-		?>
-	</select>
 
-	<input type="submit" value="Save" />
+  <p><label><input name="custom_styles" type="radio" value="none" <?php if ($hemingway->style == 'none') echo 'checked="checked"'; ?> /> 
+  Black</label></p>
+  <p><label><input name="custom_styles" type="radio" value="white.css" <?php if ($hemingway->style == 'white.css') echo 'checked="checked"'; ?> /> White</label></p>
+
+	<input type="submit" value="Update Color &raquo;" />
 </form>
 
 <h3>Hemingway's Bottombar&trade;</h3>
 <p>Drag and drop the different blocks into their place below. After you drag the block to the area, it will update with the new contents automatically.</p>
+
 <ul id="addables">
 	<? foreach($hemingway->available_blocks as $ref => $name) : ?>
 	<li id="<?= $ref ?>" class="blocks"><?= $name ?></li>
@@ -415,7 +299,7 @@ for some people :)
 		foreach($hemingway->get_block_contents('block_1') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> <a href="#" class="remove" onclick="remove_block('block_1', '<?=$block_ref?>'); return false">remove</a></li>
+			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_1', '<?=$block_ref?>');">remove</a>)</li>
 		<? endforeach; ?>
 	</ul>
 </div>
@@ -426,12 +310,7 @@ Droppables.add(
 		onDrop:function(element){
 			new Ajax.Updater('block_1', 'themes.php?page=functions.php&hem_action=add_block&block_place=block_1&block_ref=' + element.id, 
 				{
-					evalScripts:true, asynchronous:true,
-					onComplete : function(request){
-						$('dropmessage').innerHTML = "<p>Block added!</p>";
-						Effect.Appear('dropmessage', { queue: 'front' });
-						Effect.Fade('dropmessage', { queue: 'end' });
-					}
+					evalScripts:true, asynchronous:true
 				}
 			)
 		}, 
@@ -446,7 +325,7 @@ Droppables.add(
 		foreach($hemingway->get_block_contents('block_2') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> <a href="#" class="remove" onclick="remove_block('block_2', '<?=$block_ref?>'); return false">remove</a></li>
+			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_2', '<?=$block_ref?>');">remove</a>)</li>
 		<? endforeach; ?>
 	</ul>
 </div>
@@ -457,12 +336,7 @@ Droppables.add(
 		onDrop:function(element){
 			new Ajax.Updater('block_2', 'themes.php?page=functions.php&hem_action=add_block&block_place=block_2&block_ref=' + element.id, 
 				{
-					evalScripts:true, asynchronous:true,
-					onComplete : function(request){
-						$('dropmessage').innerHTML = "<p>Block added!</p>";
-						Effect.Appear('dropmessage', { queue: 'front' });
-						Effect.Fade('dropmessage', { queue: 'end' });
-					}
+					evalScripts:true, asynchronous:true
 				}
 			)
 		}, 
@@ -477,7 +351,7 @@ Droppables.add(
 		foreach($hemingway->get_block_contents('block_3') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> <a href="#" class="remove" onclick="remove_block('block_3', '<?=$block_ref?>'); return false">remove</a></li>
+			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_3', '<?=$block_ref?>');">remove</a>)</li>
 		<? endforeach; ?>
 	</ul>
 </div>
@@ -488,12 +362,7 @@ Droppables.add(
 		onDrop:function(element){
 			new Ajax.Updater('block_3', 'themes.php?page=functions.php&hem_action=add_block&block_place=block_3&block_ref=' + element.id, 
 				{
-					evalScripts:true, asynchronous:true,
-					onComplete : function(request){
-						$('dropmessage').innerHTML = "<p>Block added!</p>";
-						Effect.Appear('dropmessage', { queue: 'front' });
-						Effect.Fade('dropmessage', { queue: 'end' });
-					}
+					evalScripts:true, asynchronous:true
 				}
 			)
 		}, 
@@ -619,26 +488,7 @@ Droppables.add(
 		?>
 
 
-<h3>Miscellaneous Options</h3>
-<form name="dofollow" action="" method="post">
-<input type="hidden" name="misc_options" value="1" />
-<p><label><input type="checkbox" value="1" name="international_dates" <? if ($hemingway_options['international_dates'] == 1) echo "checked=\"checked\""; ?> /> Use international dates? (day/month/year)</label></p>
-<p><input type="submit" value="Save my options" /></p>
-</form>
 
-<h3>Reset / Uninstall</h3>
-<form action="" method="post" onsubmit="return confirm('Are you sure you want to reset all of your settings?')">
-<input type="hidden" name="reset" value="1" />
-<p>If you would like to reset or uninstall Hemingway, push this button. It will erase all of your preferences. <input type="submit" value="Reset" /></p>
-</form>
-
-<? else: ?>
-<p>Thank you for using Hemingway!  There's two reasons you might be seeing this:</p>
-<ol>
-	<li>You've just installed Hemingway for the first time: If this is the case, simply reload this page or click on Hemingway Options again and you'll be on your way!</li>
-	<li>You've just uninstalled Hemingway or reset your options. If you'd like to keep using Hemingway, reload this page or click on Hemingway Options again.</li>
-</ol>
-<? endif; ?>
 
 </div>
 

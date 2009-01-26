@@ -10,7 +10,7 @@
 		</div>
 <?php $attachment_link = get_the_attachment_link($post->ID, true, array(450, 800)); // This also populates the iconsize for the next line ?>
 <?php $_post = &get_post($post->ID); $classname = ($_post->iconsize[0] <= 128 ? 'small' : '') . 'attachment'; // This lets us style narrow icons specially ?>
-		<div class="post" id="post-<?php the_ID(); ?>">
+		<div <?php post_class(); ?> id="post-<?php the_ID(); ?>">
 			<h2><a href="<?php echo get_permalink($post->post_parent); ?>" rev="attachment"><?php echo get_the_title($post->post_parent); ?></a> &raquo; <a href="<?php echo get_permalink() ?>" rel="bookmark" title="Permanent Link: <?php the_title(); ?>"><?php the_title(); ?></a></h2>
 			<div class="entrytext">
 				<p class="<?php echo $classname; ?>"><?php echo $attachment_link; ?><br /><?php echo basename($post->guid); ?></p>
@@ -27,7 +27,7 @@
 							http://binarybonsai.com/archives/2004/08/17/time-since-plugin/ */
 							/* $entry_datetime = abs(strtotime($post->post_date) - (60*120)); echo time_since($entry_datetime); echo ' ago'; */ ?> 
 						on <?php the_time('l, F jS, Y') ?> at <?php the_time() ?>
-						and is filed under <?php the_category(', ') ?>.
+						and is filed under <?php the_category(', ') ?><?php if (is_callable('the_tags')) the_tags(' with tags ', ', '); ?>.
 						You can follow any responses to this entry through the <?php comments_rss_link('RSS 2.0'); ?> feed. 
 						
 						<?php if (('open' == $post-> comment_status) && ('open' == $post->ping_status)) {

@@ -1,4 +1,4 @@
-body, #primary{
+body{
 	color:#444;
 }
 #header, #primary{
@@ -10,10 +10,7 @@ body, #primary{
 }
 
 body, #ancillary{
-	background:#E5E5E5;
-}
-#ancillary{
-	border-top:1px solid #D5D5D5;
+	background:#D8D8D8;
 }
 
 a, .story .details a, .story .details a:hover{
@@ -34,7 +31,9 @@ table th{ color:#FFF; background:#333; }
 table td{ color:#000; background:#EAEAEA; }
 
 #header h2{ border-right:1px solid #7F7F7F; }
-
+.secondary dd a:hover {
+	color: #000;
+}
 .secondary .featured p{
 	border-bottom:1px solid #CCC;
 	border-top: 1px solid #CCC;
@@ -42,10 +41,6 @@ table td{ color:#000; background:#EAEAEA; }
 .secondary .featured dl{
 	border-bottom:1px solid #CCC;
 }
-.secondary dd a{ color:#7F7F7F; }
-.secondary dd a:hover{ color:#000; }
-
-
 .secondary .featured dt{
 	color:#333;
 }
@@ -74,7 +69,6 @@ ul.dates a, ul.counts a, ul.blogroll a, ul.pages a{
 }
 ul.dates a:hover, ul.dates a:hover .date, ul.counts a:hover, ul.counts a:hover .count, ul.blogroll a:hover, ul.pages a:hover{ color:#000; }
 
-#footer{ color: #666; }
 #footer a, #footer p.attributes a{
 	color:#333;
 }

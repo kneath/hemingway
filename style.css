@@ -1,10 +1,11 @@
 /*  
 Theme Name: Hemingway
 Theme URI: http://warpspire.com/hemingway
-Description: Hemingway is a simple weblog theme by <a href="http://warpspire.com">Kyle Neath</a> aimed at giving bloggers a great platform on which to customize.  If you'd like to learn more about Hemingway, <a href="http://warpspire.com/hemingway">head on over to Warpspire</a> or ask a question in the <a href="http://support.warpspire.com/discussions/hemingway">official support forums.</a> <br /><strong>This theme requires WordPress 2.0+</strong></a>.
-Version: 0.19
+Description: A staggered-column theme with excerpts on the front and a customizable footer.
+Version: 0.1 ALPHA-wpcom
 Author: Kyle Neath
 Author URI: http://warpspire.com
+Tags: black, dark, custom colors, theme options, two columns, bottom widgets, fixed width
 */
 
 
@@ -21,7 +22,7 @@ h1, h2, h3, h4, h5, h6, p, pre, blockquote, label, ul, ol, dl, fieldset, address
 li, dd { margin-left:5%; }
 fieldset { padding: .5em; }
 select option{ padding:0 5px; }
-
+select, option { color:black; }
 .hide, .print-logo, .close-button{ display:none; }
 .left{ float:left; }
 .right{ float:right; }
@@ -71,7 +72,7 @@ p{
 	line-height:1.75em;
 }
 
-ul li{
+#primary ul li{
 	list-style-type:square;
 	margin:0.5em 0 0.5em 2em;
 }
@@ -197,15 +198,14 @@ table caption{
 	border-top:1px solid #333;
 	padding:0.5em 0;
 	font-size:0.95em;
-	color:#666;
+	color:#4D4D4D;
 }
 .story .details .read-on{
 	background:url(images/readon_black.gif) 100% 60% no-repeat;
 	padding-right:20px;
-	display:block;
 }
 .story .details a{
-	color:#666;
+	color:#4D4D4D;
 	text-decoration:none;
 }
 .story .details a:hover{ color:#FFF; }
@@ -223,7 +223,7 @@ table caption{
 	padding-top:0.65em;
 	display:inline;
 }
-* html #primary .secondary{ margin-right:3%; }
+* html #primary .secondary{ margin-right:4%; }
 
 .secondary .featured p{
 	border-bottom:1px solid #333333;
@@ -288,6 +288,11 @@ ol#comments li{
 	margin:2em 0;
 }
 
+ol#comments li .avatar {
+	border: 1px solid #222;
+	padding: 2px;
+}
+
 #comments cite{
 	float:left;
 	width:31%;
@@ -298,6 +303,7 @@ ol#comments li{
 #comments cite span{
 	display:block;
 }
+#comments cite span.avatarspan{ float: left; }
 #comments cite .author{ font-size:1.2em; }
 #comments cite .author a{
 	text-decoration:none;
@@ -360,6 +366,7 @@ textarea.commentbox{
 	font-size:1.25em;
 	font-family:Arial, Helvetica, sans-serif;
 }
+
 label.text{
 	position:relative;
 	left:0.5em;
@@ -387,11 +394,11 @@ label.text{
 	width: 30%;
 	margin:0 0 0 5%;
 }
-* html #ancillary .block{
-	margin-left:3.9%;
-}
 #ancillary .twice-length{ width:65%; }
 #ancillary .thrice-length{ width:100%; }
+* html #ancillary .block{
+	margin:0 0 0 4%;
+}
 #ancillary .first, * html #ancillary .first{
 	clear:both;
 	margin:0;
@@ -484,11 +491,11 @@ ul.pages ul li{
 	float:right;
 	width:200px;
 	margin:1em 0 0 0;
-	opacity:0.4;
+	-moz-opacity:0.4;
 	text-align:right;
 }
 #search:hover{
-  opacity:1.0;
+	-moz-opacity:1.0;
 }
 #search .searchimg{
 	float:left;
@@ -576,4 +583,61 @@ ul.pages ul li{
 #search img.archives-icon{
 	margin:0 7px 0 0;
 	top:1px;
+}
+
+img.centered, img.aligncenter {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+img.alignright {
+	padding: 4px;
+	margin: 0 0 2px 7px;
+	display: inline;
+}
+
+img.alignleft {
+	padding: 4px;
+	margin: 0 7px 2px 0;
+	display: inline;
+}
+
+.alignright {
+	float: right;
+}
+
+.alignleft {
+	float: left;
+}
+.aligncenter, div.aligncenter {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-caption {
+	border: 1px solid #ddd;
+	text-align: center;
+	background-color: #f3f3f3;
+	padding-top: 4px;
+	margin: 10px;
+	-moz-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.wp-caption img {
+	margin: 0;
+	padding: 0;
+	border: 0 none;
+}
+
+.wp-caption p.wp-caption-text {
+	font-size: 11px;
+	color: #000;
+	line-height: 17px;
+	padding: 0 4px 5px;
+	margin: 0;
 }
