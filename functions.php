@@ -262,9 +262,9 @@ for some people :)
 
 
 
-<? if($message) : ?>
-<div id="message" class="updated fade"><p><?=$message?></p></div>
-<? endif; ?>
+<?php if($message) : ?>
+<div id="message" class="updated fade"><p><?php echo $message ?></p></div>
+<?php endif; ?>
 
 <div class="wrap" style="position:relative;">
 <h2><?php _e('Hemingway Options'); ?></h2>
@@ -285,22 +285,22 @@ for some people :)
 <p>Drag and drop the different blocks into their place below. After you drag the block to the area, it will update with the new contents automatically.</p>
 
 <ul id="addables">
-	<? foreach($hemingway->available_blocks as $ref => $name) : ?>
-	<li id="<?= $ref ?>" class="blocks"><?= $name ?></li>
-	<script type="text/javascript">new Draggable('<?= $ref ?>', {revert:true})</script>
-	<? endforeach; ?>
+	<?php foreach($hemingway->available_blocks as $ref => $name) : ?>
+	<li id="<?php echo $ref ?>" class="blocks"><?php echo $name ?></li>
+	<script type="text/javascript">new Draggable('<?php echo $ref ?>', {revert:true})</script>
+	<?php endforeach; ?>
 </ul>
 
 <div class="clear"></div>
 
 <div class="block" id="block_1">
 	<ul>
-		<? 
+		<?php 
 		foreach($hemingway->get_block_contents('block_1') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_1', '<?=$block_ref?>');">remove</a>)</li>
-		<? endforeach; ?>
+			<li><?php echo $block_name ?> (<a href="#" onclick="remove_block('block_1', '<?php echo $block_ref ?>');">remove</a>)</li>
+		<?php endforeach; ?>
 	</ul>
 </div>
 <script type="text/javascript">
@@ -321,12 +321,12 @@ Droppables.add(
 
 <div class="block" id="block_2">
 	<ul>
-		<? 
+		<?php 
 		foreach($hemingway->get_block_contents('block_2') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_2', '<?=$block_ref?>');">remove</a>)</li>
-		<? endforeach; ?>
+			<li><?php echo $block_name ?> (<a href="#" onclick="remove_block('block_2', '<?php echo $block_ref ?>');">remove</a>)</li>
+		<?php endforeach; ?>
 	</ul>
 </div>
 <script type="text/javascript">
@@ -347,12 +347,12 @@ Droppables.add(
 
 <div class="block" id="block_3">
 	<ul>
-		<? 
+		<?php 
 		foreach($hemingway->get_block_contents('block_3') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_3', '<?=$block_ref?>');">remove</a>)</li>
-		<? endforeach; ?>
+			<li><?php echo $block_name ?> (<a href="#" onclick="remove_block('block_3', '<?php echo $block_ref ?>');">remove</a>)</li>
+		<?php endforeach; ?>
 	</ul>
 </div>
 <script type="text/javascript">
@@ -379,12 +379,12 @@ Droppables.add(
 <div class="block" id="block_4">
 	Block 4
 	<ul>
-		<? 
+		<?php 
 		foreach($hemingway->get_block_contents('block_4') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_4', '<?=$block_ref?>');">remove</a>)</li>
-		<? endforeach; ?>
+			<li><?php echo $block_name ?> (<a href="#" onclick="remove_block('block_4', '<?php echo $block_ref ?>');">remove</a>)</li>
+		<?php endforeach; ?>
 	</ul>
 </div>
 <script type="text/javascript">
@@ -406,12 +406,12 @@ Droppables.add(
 <div class="block" id="block_5">
 	Block 5
 	<ul>
-		<? 
+		<?php 
 		foreach($hemingway->get_block_contents('block_5') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_5', '<?=$block_ref?>');">remove</a>)</li>
-		<? endforeach; ?>
+			<li><?php echo $block_name ?> (<a href="#" onclick="remove_block('block_5', '<?php echo $block_ref ?>');">remove</a>)</li>
+		<?php endforeach; ?>
 	</ul>
 </div>
 <script type="text/javascript">
@@ -433,12 +433,12 @@ Droppables.add(
 <div class="block" id="block_6">
 	Block 6
 	<ul>
-		<? 
+		<?php 
 		foreach($hemingway->get_block_contents('block_6') as $key => $block_ref) :
 			$block_name = $hemingway->available_blocks[$block_ref];
 		?>
-			<li><?= $block_name ?> (<a href="#" onclick="remove_block('block_6', '<?=$block_ref?>');">remove</a>)</li>
-		<? endforeach; ?>
+			<li><?php echo $block_name ?> (<a href="#" onclick="remove_block('block_6', '<?php echo $block_ref ?>');">remove</a>)</li>
+		<?php endforeach; ?>
 	</ul>
 </div>
 <script type="text/javascript">
@@ -475,13 +475,13 @@ Droppables.add(
 				if (!array_key_exists($block_ref, $hemingway->available_blocks)){
 				?>
 				<h3>You have uninstalled blocks!</h3>
-				<p>Give the block <strong><?=$block_ref ?></strong> a display name (such as "About Page")</p>
+				<p>Give the block <strong><?php echo $block_ref ?></strong> a display name (such as "About Page")</p>
 				<form action="" name="dofollow" method="post">
-					<input type="hidden" name="block_ref" value="<?=$block_ref?>" />
-					<?=$block_ref ?> : <input type="text" name="display_name" />
+					<input type="hidden" name="block_ref" value="<?php echo $block_ref ?>" />
+					<?php echo $block_ref ?> : <input type="text" name="display_name" />
 					<input type="submit" value="Save" />
 				</form>
-				<?
+				<?php
 				}
 			}
 		} 
