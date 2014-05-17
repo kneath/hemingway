@@ -13,7 +13,7 @@
 	global $hemingway;
 	if ($hemingway->style and $hemingway->style != 'none') :
 ?>
-<link rel="stylesheet" href="<?php bloginfo('stylesheet_directory'); ?>/styles/<?= $hemingway->style ?>" type="text/css" media="screen" />
+<link rel="stylesheet" href="<?php bloginfo('stylesheet_directory'); ?>/styles/<?php echo $hemingway->style ?>" type="text/css" media="screen" />
 
 <?php endif; ?>
 
